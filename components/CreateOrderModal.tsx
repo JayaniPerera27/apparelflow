@@ -93,7 +93,7 @@ export default function CreateOrderModal({
     return {
       id: name,
       value: v[name],
-      onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => change(name, e.target.value),
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) => change(name, e.target.value),
       onBlur: () => blur(name),
       "aria-invalid": !!errors[name],
       "aria-describedby": errors[name] ? `${name}-error` : undefined,
@@ -149,7 +149,7 @@ export default function CreateOrderModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/60 p-4"
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/60 p-2 sm:p-4"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -158,7 +158,7 @@ export default function CreateOrderModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="order-modal-title"
-        className="card my-8 w-full max-w-2xl p-6"
+        className="card my-2 w-full max-w-2xl p-4 sm:my-8 sm:p-6"
       >
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -173,16 +173,46 @@ export default function CreateOrderModal({
         </div>
 
         <form onSubmit={submit} noValidate className="mt-6 space-y-5">
-          <Row id="recipeId" label="Recipe" error={errors.recipeId}>
-            <select {...inputProps("recipeId")} autoFocus>
-              <option value="">Select a recipe</option>
-              {recipes.map((r) => (
-                <option key={r.id} value={r.id}>
-                  {r.recipeCode} - {r.name}
-                </option>
-              ))}
-            </select>
-          </Row>
+          <fieldset className="min-w-0">
+            <legend className="label">Recipe</legend>
+            <div role="radiogroup" className="grid gap-3 sm:grid-cols-2">
+              {recipes.map((r) => {
+                const selected = v.recipeId === String(r.id);
+                return (
+                  <label
+                    key={r.id}
+                    className={`flex cursor-pointer items-start gap-3 rounded-lg border p-3 focus-within:ring-2 focus-within:ring-indigo-200 ${
+                      selected
+                        ? "border-indigo-700 bg-indigo-50"
+                        : errors.recipeId
+                          ? "border-red-600 bg-white"
+                          : "border-slate-400 bg-white hover:bg-slate-50"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="recipeId"
+                      value={r.id}
+                      checked={selected}
+                      onChange={() => change("recipeId", String(r.id))}
+                      className="mt-1 h-4 w-4 accent-indigo-700"
+                    />
+                    <span>
+                      <span className="block text-sm font-semibold text-slate-900">{r.name}</span>
+                      <span className="block text-xs text-slate-700">
+                        {r.recipeCode} · {r.stdFabricYards} yds per piece
+                      </span>
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+            {errors.recipeId && (
+              <p id="recipeId-error" role="alert" className="mt-1.5 text-sm text-red-700">
+                {errors.recipeId}
+              </p>
+            )}
+          </fieldset>
 
           <div className="grid gap-5 sm:grid-cols-2">
             <Row id="targetQty" label="Target batch quantity (garments)" error={errors.targetQty}>
@@ -203,7 +233,7 @@ export default function CreateOrderModal({
           </Row>
 
           {recipe && (
-            <div className="rounded-lg border border-slate-300">
+            <div className="overflow-hidden rounded-lg border border-slate-300">
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-300 bg-slate-100 px-4 py-2.5">
                 <p className="text-sm font-semibold text-slate-900">Expected component counts</p>
                 <p className="text-sm text-slate-900">
@@ -213,26 +243,28 @@ export default function CreateOrderModal({
                   </span>
                 </p>
               </div>
-              <table className="min-w-full text-sm">
-                <thead>
-                  <tr className="text-left text-slate-900">
-                    <th className="px-4 py-2 font-semibold">Component</th>
-                    <th className="px-4 py-2 text-right font-semibold">Pcs / garment</th>
-                    <th className="px-4 py-2 text-right font-semibold">Expected</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {recipe.components.map((c) => (
-                    <tr key={c.id}>
-                      <td className="px-4 py-2 text-slate-900">{c.componentName}</td>
-                      <td className="px-4 py-2 text-right text-slate-900">{c.piecesPerGarment}</td>
-                      <td className="px-4 py-2 text-right font-semibold text-slate-900">
-                        {qty ? expectedQty(qty, c.piecesPerGarment) : "-"}
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="min-w-full text-sm">
+                  <thead>
+                    <tr className="text-left text-slate-900">
+                      <th className="px-4 py-2 font-semibold">Component</th>
+                      <th className="px-4 py-2 text-right font-semibold">Pcs / garment</th>
+                      <th className="px-4 py-2 text-right font-semibold">Expected</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200">
+                    {recipe.components.map((c) => (
+                      <tr key={c.id}>
+                        <td className="px-4 py-2 text-slate-900">{c.componentName}</td>
+                        <td className="px-4 py-2 text-right text-slate-900">{c.piecesPerGarment}</td>
+                        <td className="px-4 py-2 text-right font-semibold text-slate-900">
+                          {qty ? expectedQty(qty, c.piecesPerGarment) : "-"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
 
@@ -242,11 +274,11 @@ export default function CreateOrderModal({
             </p>
           )}
 
-          <div className="flex justify-end gap-3">
-            <button type="button" onClick={onClose} className="btn-secondary">
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button type="button" onClick={onClose} className="btn-secondary w-full sm:w-auto">
               Cancel
             </button>
-            <button type="submit" disabled={submitting} className="btn-primary">
+            <button type="submit" disabled={submitting} className="btn-primary w-full sm:w-auto">
               {submitting ? "Submitting..." : "Submit for verification"}
             </button>
           </div>
