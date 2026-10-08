@@ -30,16 +30,19 @@ export default async function DashboardLayout({ children }: { children: React.Re
             Apparel<span className="text-indigo-700">Flow</span>
           </Link>
           <nav className="flex gap-5">
-            {NAV[session.role].map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-sm font-medium text-slate-800 hover:text-indigo-700"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
+  <Link href="/dashboard" className="text-sm font-medium text-slate-800 hover:text-indigo-700">
+    Dashboard
+  </Link>
+  {NAV[session.role].map((item) => (
+    <Link
+      key={item.href}
+      href={item.href}
+      className="text-sm font-medium text-slate-800 hover:text-indigo-700"
+    >
+      {item.label}
+    </Link>
+  ))}
+</nav>
         </div>
         <div className="flex items-center gap-3">
           <div className="text-right leading-tight">
