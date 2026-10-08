@@ -41,3 +41,21 @@ export type PendingOrderDTO = {
   createdAt: string;
   items: VerifyItemDTO[];
 };
+
+export type SewingOrderDTO = {
+  id: number;
+  orderNo: string;
+  status: "VERIFIED" | "SEWING_STARTED";
+  recipeCode: string;
+  recipeName: string;
+  targetQty: number;
+  fabricRollId: string;
+  actualFabricYds: number;
+  wastageCap: number;
+  verifiedById: number | null;
+  verifiedByName: string | null;
+  verifiedAt: string | null;
+  wastagePct: number | null;
+  items: { componentName: string; expectedQty: number; actualQty: number | null }[];
+  history: { decision: "APPROVED" | "REJECTED"; note: string | null; byName: string; at: string }[];
+};
