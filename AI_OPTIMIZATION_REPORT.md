@@ -5,15 +5,15 @@ Project: ApparelFlow ERP, Cutting Gatekeeper Verification Terminal
 
 ## 1. Tools and prompting
 
-| Tool          | Used for                                                                                                                                                                                                       |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Claude (chat) | Planning the 4-day build, database design (DBML for dbdiagram.io), Prisma schema and seed script, API route handlers, Zod schemas, React components, Tailwind styling, Vitest tests, debugging terminal errors |
+| Tool              | Used for                                                                                                                                                                                                                                           |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Claude (chat)** | Planning the 4-day build, database design (DBML for dbdiagram.io), Prisma schema and seed script, API route handlers, Zod schemas, React components, Tailwind styling, Vitest tests, debugging terminal errors                                     |
+| **Google Gemini** | Designing and refining the UI/UX, developing an interactive and responsive landing page with animations/glassmorphism, fixing color contrast/theme inconsistencies across dashboard cards, and optimizing Next.js client/server navigation routing |
 
-**How I prompted:** I gave the full challenge brief first and asked for a step-by-step plan. After that I worked one feature at a time, one git branch per feature. I pasted real terminal errors and screenshots back into the chat and asked for fixes. I did not accept code without checking it start to end and running it.
+### How I Prompted
 
-|Google | GeminiDesigning and refining the UI/UX, developing an interactive and responsive landing page with animations/glassmorphism, fixing color contrast/theme inconsistencies across dashboard cards, and optimizing Next.js client/server navigation routing |
-
-**How I prompted:** I gave the full challenge brief first and asked for a step-by-step plan. For the UI and Landing Page, I provided my raw Next.js components and `globals.css` to Gemini, requesting accessible contrast adjustments, glassmorphism cards, CSS keyframe animations, and role-aware navigation highlighting. I pasted real terminal errors and screenshots back into the chat and asked why is that, ensuring all UI updates were manually verified before committing.
+- **For Core Architecture & Backend (Claude):** I gave the full challenge brief first and asked for a step-by-step plan. After that I worked one feature at a time, one git branch per feature. I pasted real terminal errors and screenshots back into the chat and asked for fixes. I did not accept code without checking it start to end and running it.
+- **For UI/UX & Landing Page (Gemini):** I provided my raw Next.js components and `globals.css` to Gemini, requesting accessible contrast adjustments, glassmorphism cards, CSS keyframe animations, and role-aware navigation highlighting. I pasted real terminal errors and screenshots back into the chat and asked why they occurred, ensuring all UI updates were manually verified before committing.
 
 ## 2. Flawed or broken AI code
 
