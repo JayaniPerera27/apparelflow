@@ -2,7 +2,11 @@ import { Role } from "@/app/generated/prisma/client";
 import { getSession, Session } from "@/lib/auth";
 
 export class HttpError extends Error {
-  constructor(public status: number, message: string) {
+  constructor(
+    public status: number,
+    message: string,
+    public details?: Record<string, unknown>,
+  ) {
     super(message);
   }
 }
@@ -17,7 +21,7 @@ export async function requireRole(allowed: Role[]): Promise<Session> {
 
 export function handleError(e: unknown) {
   if (e instanceof HttpError) {
-    return Response.json({ error: e.message }, { status: e.status });
+    return Response.json({ error: e.message, ...e.details }, { status: e.status });
   }
   console.error(e);
   return Response.json({ error: "Internal server error" }, { status: 500 });

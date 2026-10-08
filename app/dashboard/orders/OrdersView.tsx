@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import CreateOrderModal from "@/components/CreateOrderModal";
+import ResubmitModal from "@/components/ResubmitModal";
 import StatusBadge from "@/components/StatusBadge";
 import type { OrderDTO, RecipeDTO } from "@/lib/types";
 
@@ -13,6 +14,7 @@ const dateFmt = new Intl.DateTimeFormat("en-GB", {
 
 export default function OrdersView({ orders, recipes }: { orders: OrderDTO[]; recipes: RecipeDTO[] }) {
   const [open, setOpen] = useState(false);
+  const [resubmitFor, setResubmitFor] = useState<OrderDTO | null>(null);
 
   return (
     <div className="space-y-4">
@@ -60,6 +62,15 @@ export default function OrdersView({ orders, recipes }: { orders: OrderDTO[]; re
                         <span className="font-semibold">Verifier note:</span> {o.rejectionNote}
                       </p>
                     )}
+                    {o.status === "REJECTED" && (
+                      <button
+                        type="button"
+                        onClick={() => setResubmitFor(o)}
+                        className="btn-secondary mt-2 px-3 py-1 text-xs"
+                      >
+                        Re-cut and resubmit
+                      </button>
+                    )}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap text-slate-900">
                     {dateFmt.format(new Date(o.createdAt))}
@@ -72,6 +83,7 @@ export default function OrdersView({ orders, recipes }: { orders: OrderDTO[]; re
       </div>
 
       {open && <CreateOrderModal recipes={recipes} onClose={() => setOpen(false)} />}
+      {resubmitFor && <ResubmitModal order={resubmitFor} onClose={() => setResubmitFor(null)} />}
     </div>
   );
 }
