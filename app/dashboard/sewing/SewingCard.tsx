@@ -6,6 +6,7 @@ import TrafficLight from "@/components/TrafficLight";
 import { itemStatus } from "@/lib/domain";
 import type { SewingOrderDTO } from "@/lib/types";
 
+
 const dateFmt = new Intl.DateTimeFormat("en-GB", {
   dateStyle: "medium",
   timeStyle: "short",
@@ -18,7 +19,15 @@ function variance(actual: number | null, expected: number) {
   return d > 0 ? `+${d}` : String(d);
 }
 
-export default function SewingCard({ order, canStart }: { order: SewingOrderDTO; canStart: boolean }) {
+export default function SewingCard({
+  order,
+  canStart,
+  onStarted,
+}: {
+  order: SewingOrderDTO;
+  canStart: boolean;
+  onStarted?: (message: string) => void;
+}) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -37,8 +46,8 @@ export default function SewingCard({ order, canStart }: { order: SewingOrderDTO;
         return;
       }
       if (!res.ok) {
-        setError(data.error ?? "Could not start sewing");
-        return;
+          onStarted?.(`${order.orderNo} sent to the sewing floor. Sewing assembly started.`);
+          router.refresh();
       }
       router.refresh();
     } catch {
